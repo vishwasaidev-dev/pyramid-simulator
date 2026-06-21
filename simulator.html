@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raising the Stone — A Pyramid Construction Timeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --limestone: #E8DCC4;
+    --limestone-light: #F2EAD8;
+    --ink: #3D2817;
+    --sandstone: #C17F3E;
+    --sandstone-dark: #A8652A;
+    --papyrus-green: #7C8B7F;
+    --basalt: #1A1410;
+    --ochre: #D4A847;
+    --red-ochre: #B5462F;
+    --line: rgba(61, 40, 23, 0.18);
+    --shadow-soft: rgba(61, 40, 23, 0.12);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--limestone);
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(193,127,62,0.08), transparent 40%),
+      radial-gradient(circle at 85% 92%, rgba(124,139,127,0.08), transparent 40%);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 4rem 0;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sandstone-dark);
+    font-weight: 700;
+    margin-bottom: 0.9rem;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: clamp(2rem, 4.6vw, 3.1rem);
+    margin: 0 0 0.6rem;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+
+  header p.sub {
+    font-size: 0.98rem;
+    color: var(--ink);
+    opacity: 0.72;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.55;
+  }
+
+  /* mode toggle in header */
+  .mode-switch {
+    display: inline-flex;
+    margin-top: 1.4rem;
+    border: 1px solid var(--ink);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .mode-switch button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 0.55rem 1.1rem;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    opacity: 0.55;
+  }
+  .mode-switch button.active {
+    background: var(--ink);
+    color: var(--limestone-light);
+    opacity: 1;
+  }
+
+  /* ===== LAYOUT ===== */
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2.2rem 2rem 0;
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 2rem;
+  }
+
+  @media (max-width: 920px) {
+    .wrap { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--limestone-light);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: 0 1px 0 var(--shadow-soft), 0 8px 24px -16px var(--shadow-soft);
+  }
+
+  /* ===== SCENE COLUMN ===== */
+  .scene-col { display: flex; flex-direction: column; gap: 1.2rem; }
+
+  .scene-panel { padding: 0; overflow: hidden; }
+
+  .scene-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.3rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .scene-header h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.08rem;
+    margin: 0;
+  }
+
+  .scene-header .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--papyrus-green);
+    letter-spacing: 0.05em;
+  }
+
+  #sceneCanvas, #topCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: linear-gradient(180deg, #F5EFDD 0%, #EDE2C8 55%, #E2D2AC 100%);
+  }
+
+  /* ===== TIMELINE TRANSPORT ===== */
+  .transport {
+    padding: 1rem 1.3rem 1.2rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .transport-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.9rem;
+    flex-wrap: wrap;
+  }
+
+  button.run-btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.86rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    background: var(--sandstone);
+    color: var(--limestone-light);
+    letter-spacing: 0.01em;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  button.run-btn:hover { background: var(--sandstone-dark); }
+  button.run-btn:active { transform: scale(0.97); }
+
+  button.icon-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    padding: 0.58rem 0.85rem;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    opacity: 0.75;
+  }
+  button.icon-btn:hover { opacity: 1; border-color: var(--ink); }
+
+  .speed-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--papyrus-green);
+  }
+  .speed-group select {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--limestone-light);
+    color: var(--ink);
+  }
+
+  .scrub-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .scrub-row input[type="range"] { flex: 1; }
+  .scrub-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--sandstone-dark);
+    font-weight: 700;
+    white-space: nowrap;
+    min-width: 86px;
+    text-align: right;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--line);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--sandstone);
+    cursor: pointer;
+    border: 2px solid var(--limestone-light);
+    box-shadow: 0 0 0 1px var(--sandstone-dark);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--sandstone);
+    cursor: pointer;
+    border: 2px solid var(--limestone-light);
+    box-shadow: 0 0 0 1px var(--sandstone-dark);
+  }
+
+  /* ===== TOP-DOWN PANEL ===== */
+  .topdown-panel { padding: 0; overflow: hidden; }
+
+  /* ===== STATS PANEL (right column) ===== */
+  .controls-panel { padding: 1.4rem 1.4rem 1.5rem; }
+
+  .controls-panel h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0 0 1.1rem;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1.3rem;
+  }
+
+  .stat-box {
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0.7rem 0.8rem;
+  }
+  .stat-box .stat-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--papyrus-green);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .stat-box .stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .stat-box .stat-value small {
+    font-size: 0.68rem;
+    font-weight: 500;
+    opacity: 0.6;
+  }
+
+  .progress-track {
+    height: 8px;
+    background: var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.4rem;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sandstone), var(--ochre));
+    transition: width 0.15s linear;
+  }
+  .progress-caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--papyrus-green);
+    margin-bottom: 1.3rem;
+  }
+
+  .control-group { margin-bottom: 1.3rem; }
+  .control-group:last-child { margin-bottom: 0; }
+
+  .control-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+  .control-label .name { font-size: 0.85rem; font-weight: 600; color: var(--ink); }
+  .control-label .value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--sandstone-dark);
+    font-weight: 700;
+  }
+  .control-note {
+    font-size: 0.74rem;
+    color: var(--ink);
+    opacity: 0.55;
+    margin-top: 0.35rem;
+    line-height: 1.4;
+  }
+
+  .pill-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.45rem 0.7rem;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: transparent;
+    cursor: pointer;
+    color: var(--ink);
+    opacity: 0.65;
+  }
+  .pill:hover { opacity: 1; }
+  .pill.active {
+    background: var(--sandstone);
+    border-color: var(--sandstone-dark);
+    color: var(--limestone-light);
+    opacity: 1;
+  }
+
+  /* ===== LEDGER ===== */
+  .ledger {
+    margin-top: 2rem;
+    background: var(--basalt);
+    border-radius: 4px;
+    color: var(--limestone-light);
+    overflow: hidden;
+  }
+
+  .ledger-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 1.2rem 1.5rem 0.9rem;
+    border-bottom: 1px solid rgba(232,220,196,0.15);
+  }
+
+  .ledger-header .eyebrow { color: var(--ochre); margin-bottom: 0.4rem; }
+  .ledger-header h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin: 0;
+    color: var(--limestone-light);
+  }
+
+  .ledger-toggle {
+    display: flex;
+    border: 1px solid rgba(232,220,196,0.25);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .ledger-toggle button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.45rem 0.75rem;
+    border: none;
+    background: transparent;
+    color: rgba(232,220,196,0.6);
+    cursor: pointer;
+  }
+  .ledger-toggle button.active {
+    background: var(--ochre);
+    color: var(--basalt);
+  }
+
+  .ledger-body { padding: 1.3rem 1.5rem 0.5rem; }
+
+  .line-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: start;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(232,220,196,0.1);
+  }
+  .line-item:last-child { border-bottom: none; }
+  .line-item .label { font-size: 0.82rem; color: rgba(232,220,196,0.7); }
+  .line-item .formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    color: var(--papyrus-green);
+    display: block;
+    margin-top: 0.25rem;
+  }
+  .line-item .result {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--limestone-light);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* overview grid inside ledger */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 0.4rem 0 1.2rem;
+  }
+  @media (max-width: 760px) { .overview-grid { grid-template-columns: 1fr 1fr; } }
+  .overview-box .ov-label {
+    font-size: 0.7rem;
+    color: rgba(232,220,196,0.55);
+    margin-bottom: 0.35rem;
+  }
+  .overview-box .ov-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ochre);
+  }
+  .overview-box .ov-value small {
+    font-size: 0.68rem;
+    color: rgba(232,220,196,0.55);
+    font-weight: 500;
+  }
+
+  .trend-note {
+    grid-column: 1 / -1;
+    font-size: 0.8rem;
+    color: rgba(232,220,196,0.75);
+    line-height: 1.55;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(232,220,196,0.1);
+  }
+  .trend-note strong { color: var(--limestone-light); }
+
+  .verdict {
+    margin: 1.2rem 1.5rem 1.5rem;
+    padding: 1.1rem 1.3rem;
+    border-radius: 3px;
+    border: 2px solid var(--ochre);
+  }
+  .verdict .stamp {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.35rem;
+    color: var(--ochre);
+  }
+  .verdict .detail { font-size: 0.83rem; color: rgba(232,220,196,0.85); line-height: 1.5; }
+  .verdict .detail strong { color: var(--limestone-light); }
+
+  /* ===== CONTEXT FOOTER ===== */
+  .context { max-width: 1180px; margin: 3rem auto 0; padding: 0 2rem; }
+  .context-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  @media (max-width: 760px) { .context-grid { grid-template-columns: 1fr; } }
+  .fact-card {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.1rem 1.2rem;
+    background: var(--limestone-light);
+  }
+  .fact-card .num {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: var(--sandstone-dark);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .fact-card .desc { font-size: 0.8rem; color: var(--ink); opacity: 0.7; line-height: 1.45; }
+
+  footer.credits {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink);
+    opacity: 0.4;
+    margin-top: 3rem;
+    padding: 0 2rem;
+    line-height: 1.6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--sandstone-dark);
+    outline-offset: 2px;
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">A Construction Timeline</div>
+  <h1>Raising the Stone</h1>
+  <p class="sub">No iron. No pulleys. No electricity. Watch all 201 courses rise — and see why the ramp itself became the hardest part of the problem.</p>
+  <div class="mode-switch">
+    <button id="modeTimelineBtn" class="active">Timeline</button>
+    <button id="modeSingleBtn">Single Block</button>
+  </div>
+</header>
+
+<!-- ================= TIMELINE MODE ================= -->
+<div id="timelineMode">
+
+<div class="wrap">
+
+  <div class="scene-col">
+    <!-- SIDE VIEW -->
+    <div class="panel scene-panel">
+      <div class="scene-header">
+        <h2>Side View — The Ramp</h2>
+        <div class="tag" id="courseTag">COURSE 1 / 201</div>
+      </div>
+      <canvas id="sceneCanvas" width="1000" height="460"></canvas>
+      <div class="transport">
+        <div class="transport-buttons">
+          <button class="run-btn" id="playBtn">▶ Build</button>
+          <button class="icon-btn" id="stepBtn">Step ⏵</button>
+          <button class="icon-btn" id="resetBtn">⟲ Reset</button>
+          <div class="speed-group">
+            SPEED
+            <select id="speedSelect">
+              <option value="0.5">0.5×</option>
+              <option value="1" selected>1×</option>
+              <option value="3">3×</option>
+              <option value="8">8×</option>
+            </select>
+          </div>
+        </div>
+        <div class="scrub-row">
+          <input type="range" id="courseScrub" min="0" max="200" step="1" value="0">
+          <div class="scrub-label" id="scrubLabel">Course 1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP DOWN VIEW -->
+    <div class="panel topdown-panel">
+      <div class="scene-header">
+        <h2>Top View — Footprint</h2>
+        <div class="tag">SHRINKING SQUARE vs RAMP REACH</div>
+      </div>
+      <canvas id="topCanvas" width="1000" height="280"></canvas>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="panel controls-panel">
+    <h2>This Course</h2>
+
+    <div class="stat-grid">
+      <div class="stat-box">
+        <div class="stat-label">Height</div>
+        <div class="stat-value" id="statHeight">1.1 <small>m</small></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Side length</div>
+        <div class="stat-value" id="statSide">230.4 <small>m</small></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Ramp length</div>
+        <div class="stat-value" id="statRamp">7.7 <small>m</small></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Haulers needed</div>
+        <div class="stat-value" id="statHaulers">44 <small>people</small></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Block mass</div>
+        <div class="stat-value" id="statMass">2.50 <small>t</small></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Blocks, this course</div>
+        <div class="stat-value" id="statBlocks">~920 <small>blocks</small></div>
+      </div>
+      <div class="stat-box" style="grid-column: 1 / -1;">
+        <div class="stat-label">One block, start to finish</div>
+        <div class="stat-value" id="statCycle">5.4 <small>min — haul + seat + return</small></div>
+      </div>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-caption" id="progressCaption">0% of total height reached</div>
+
+    <div class="control-group">
+      <div class="control-label">
+        <span class="name">Ramp Angle</span>
+        <span class="value" id="angleVal">8°</span>
+      </div>
+      <input type="range" id="angleSlider" min="3" max="15" step="0.5" value="8">
+      <div class="control-note">Held constant for the whole build. Shallower angles need less force per block but a far longer ramp.</div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label"><span class="name">Surface / Lubrication</span></div>
+      <div class="pill-row" id="surfacePills">
+        <button class="pill" data-mu="0.55" data-label="Dry sand">Dry sand</button>
+        <button class="pill active" data-mu="0.30" data-label="Wetted sand">Wetted sand</button>
+        <button class="pill" data-mu="0.18" data-label="Wood rollers">Rollers</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEDGER -->
+<div class="wrap" style="grid-template-columns: 1fr; margin-top: 0;">
+  <div class="ledger">
+    <div class="ledger-header">
+      <div>
+        <div class="eyebrow">The Scribe's Reckoning</div>
+        <h2 id="ledgerTitle">Course Overview</h2>
+      </div>
+      <div class="ledger-toggle">
+        <button id="overviewToggleBtn" class="active">Overview</button>
+        <button id="detailToggleBtn">Detailed Math</button>
+      </div>
+    </div>
+
+    <!-- OVERVIEW LEDGER -->
+    <div id="overviewLedger">
+      <div class="overview-grid" style="padding: 1.2rem 1.5rem 1.2rem;">
+        <div class="overview-box">
+          <div class="ov-label">Courses complete</div>
+          <div class="ov-value" id="ovCourses">0 <small>/ 201</small></div>
+        </div>
+        <div class="overview-box">
+          <div class="ov-label">Blocks placed so far</div>
+          <div class="ov-value" id="ovBlocks">0</div>
+        </div>
+        <div class="overview-box">
+          <div class="ov-label">Est. days elapsed</div>
+          <div class="ov-value" id="ovDays">0 <small>of ~7,300</small></div>
+        </div>
+        <div class="overview-box">
+          <div class="ov-label">Parallel teams needed</div>
+          <div class="ov-value" id="ovTeams">— <small>to hit Herodotus's 20yr pace</small></div>
+        </div>
+        <div class="trend-note" id="trendNote">
+          The ramp is the real bottleneck: as the pyramid climbs, the <strong>ramp footprint grows far faster</strong> than the team needed to haul each block — by the upper courses the ramp would stretch out further than the pyramid's own base.
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAILED LEDGER (per-course force math) -->
+    <div id="detailLedger" class="hidden">
+      <div class="ledger-body" id="ledgerBody"></div>
+      <div class="verdict" id="verdictBox">
+        <div class="stamp" id="verdictStamp">FEASIBLE</div>
+        <div class="detail" id="verdictDetail">Calculating...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<!-- ================= END TIMELINE MODE ================= -->
+
+<!-- ================= SINGLE BLOCK MODE ================= -->
+<div id="singleMode" class="hidden">
+  <div class="wrap">
+    <div class="panel scene-panel">
+      <div class="scene-header">
+        <h2>The Ramp</h2>
+        <div class="tag">2D SIDE VIEW</div>
+      </div>
+      <canvas id="singleCanvas" width="1000" height="520"></canvas>
+      <div class="transport">
+        <div class="transport-buttons">
+          <button class="run-btn" id="singleRunBtn">Pull the Rope</button>
+          <button class="icon-btn" id="singleResetBtn">Reset</button>
+          <div class="speed-group" id="singleStatus">awaiting haul</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel controls-panel">
+      <h2>Set the Conditions</h2>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="name">Block Mass</span>
+          <span class="value" id="singleMassVal">2.5 t</span>
+        </div>
+        <input type="range" id="singleMassSlider" min="0.5" max="80" step="0.5" value="2.5">
+        <div class="control-note">Core limestone blocks averaged ~2.5t. King's Chamber granite beams reached 25–80t.</div>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="name">Ramp Angle</span>
+          <span class="value" id="singleAngleVal">8°</span>
+        </div>
+        <input type="range" id="singleAngleSlider" min="2" max="20" step="0.5" value="8">
+      </div>
+      <div class="control-group">
+        <div class="control-label"><span class="name">Surface / Lubrication</span></div>
+        <div class="pill-row" id="singleSurfacePills">
+          <button class="pill" data-mu="0.55" data-label="Dry sand">Dry sand</button>
+          <button class="pill active" data-mu="0.30" data-label="Wetted sand">Wetted sand</button>
+          <button class="pill" data-mu="0.18" data-label="Wood rollers">Rollers</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap" style="grid-template-columns: 1fr; margin-top: 0;">
+    <div class="ledger">
+      <div class="ledger-header">
+        <div>
+          <div class="eyebrow">The Scribe's Reckoning</div>
+          <h2>Force Calculation</h2>
+        </div>
+      </div>
+      <div class="ledger-body" id="singleLedgerBody"></div>
+      <div class="verdict" id="singleVerdictBox">
+        <div class="stamp" id="singleVerdictStamp">FEASIBLE</div>
+        <div class="detail" id="singleVerdictDetail">Calculating...</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ================= END SINGLE BLOCK MODE ================= -->
+
+<div class="context">
+  <div class="context-grid">
+    <div class="fact-card">
+      <span class="num">2.3M</span>
+      <div class="desc">blocks in the Great Pyramid, averaging 2.5 tonnes each — limestone quarried locally, granite hauled 800km from Aswan.</div>
+    </div>
+    <div class="fact-card">
+      <span class="num">~20 yrs</span>
+      <div class="desc">Herodotus's estimate for construction — implying roughly one block set in place every few minutes, day and night.</div>
+    </div>
+    <div class="fact-card">
+      <span class="num">0 pulleys</span>
+      <div class="desc">true pulley systems arrived with the Greeks centuries later. Old Kingdom Egypt relied on ramps, levers, rope, and rollers.</div>
+    </div>
+  </div>
+</div>
+
+<footer class="credits">
+  FORCES MODELED: weight · incline component · sliding friction · rope-width hauler limits<br>
+  Figures drawn from published Egyptology and the 2014 Univ. of Amsterdam wetted-sand friction study. A teaching tool, not a peer-reviewed reconstruction.
+</footer>
+
+<script>
+// ===================== SHARED PHYSICS CONSTANTS =====================
+const G = 9.81;
+const PERSON_FORCE_N = 245;
+const ROPE_HAULERS_MAX_PER_LINE = 40;
+const BASE_LENGTH = 230.4;   // meters
+const TOTAL_HEIGHT = 146.6;  // meters
+const N_COURSES = 201;
+const HISTORICAL_BLOCKS_ESTIMATE = 2300000; // commonly cited Egyptology figure, for reference
+const TOTAL_DAYS = 20 * 365;  // Herodotus ~20yr estimate
+
+function fmt(n, decimals=0) {
+  return n.toLocaleString('en-US', {maximumFractionDigits: decimals, minimumFractionDigits: decimals});
+}
+function fmtN(n) {
+  if (n >= 1000) return fmt(n/1000, 1) + ' kN';
+  return fmt(n, 0) + ' N';
+}
+
+// ===================== COURSE GEOMETRY MODEL =====================
+// course heights taper from 1.5m (base) to 0.55m (top), normalized to sum to TOTAL_HEIGHT
+const rawCourseHeights = [];
+for (let n = 0; n < N_COURSES; n++) {
+  rawCourseHeights.push(1.5 - (1.5 - 0.55) * (n / (N_COURSES - 1)));
+}
+const rawSum = rawCourseHeights.reduce((a,b)=>a+b, 0);
+const scaleFactor = TOTAL_HEIGHT / rawSum;
+const courseHeights = rawCourseHeights.map(h => h * scaleFactor);
+const cumHeights = [];
+{ let running = 0; for (const h of courseHeights) { running += h; cumHeights.push(running); } }
+
+function sideLength(n) {
+  // footprint at the TOP of course n (after n+1 courses are built)
+  return BASE_LENGTH * (1 - (n+1) / N_COURSES);
+}
+function blockMassAt(n) {
+  return 2.5 - (2.5 - 1.2) * (n / (N_COURSES - 1));
+}
+
+// precompute blocks-per-course: each course is a solid slab at its own (shrinking) footprint
+const AVG_BLOCK_VOL = 1.1; // m^3 approx for a ~2.5t limestone block
+const blocksPerCourse = [];
+for (let n = 0; n < N_COURSES; n++) {
+  const side = sideLength(n);
+  const h = courseHeights[n];
+  const slabVol = side * side * h;
+  blocksPerCourse.push(Math.max(1, Math.round(slabVol / AVG_BLOCK_VOL)));
+}
+const cumBlocks = [];
+{ let running = 0; for (const b of blocksPerCourse) { running += b; cumBlocks.push(running); } }
+const TOTAL_BLOCKS = cumBlocks[cumBlocks.length - 1]; // model's own total, kept internally consistent
+
+// ===================== TIMELINE STATE =====================
+let tState = {
+  course: 0,           // 0-indexed, 0 to 200
+  angleDeg: 8,
+  mu: 0.30,
+  muLabel: 'Wetted sand',
+  playing: false,
+  speed: 1,
+  subProgress: 0,       // 0-1 progress through current course's haul animation
+  ledgerMode: 'overview' // 'overview' | 'detail'
+};
+
+// ===================== CYCLE TIME MODEL =====================
+const MANEUVER_SECONDS = 5 * 60;   // levering a block into final seated position
+const RETURN_SPEED_MS = 1.2;       // unloaded walking pace back down the ramp
+const HAUL_SPEED_CAP_MS = 0.4;     // sustainable walking pace once a team is up to speed
+const TEAM_MARGIN = 1.3;           // real teams worked with margin above bare minimum
+const WORK_HOURS_PER_DAY = 10;     // daylight working hours, ancient Egypt
+
+function haulTimeSeconds(massT, rampLengthM, requiredForce, haulers) {
+  const massKg = massT * 1000;
+  const available = haulers * PERSON_FORCE_N;
+  const net = available - requiredForce;
+  if (net <= 0) return null; // infeasible, never moves
+  const accel = net / massKg;
+  const tAccel = HAUL_SPEED_CAP_MS / accel;
+  const dAccel = 0.5 * accel * tAccel * tAccel;
+  if (dAccel >= rampLengthM) {
+    return Math.sqrt(2 * rampLengthM / accel);
+  }
+  const dRemain = rampLengthM - dAccel;
+  return tAccel + dRemain / HAUL_SPEED_CAP_MS;
+}
+
+function computeCoursePhysics(n) {
+  const massT = blockMassAt(n);
+  const massKg = massT * 1000;
+  const W = massKg * G;
+  const theta = tState.angleDeg * Math.PI / 180;
+  const gravityComponent = W * Math.sin(theta);
+  const normalForce = W * Math.cos(theta);
+  const frictionForce = tState.mu * normalForce;
+  const requiredForce = gravityComponent + frictionForce;
+  const minHaulers = Math.ceil(requiredForce / PERSON_FORCE_N);
+  const ropesNeeded = Math.ceil(minHaulers / ROPE_HAULERS_MAX_PER_LINE);
+  const height = cumHeights[n];
+  const rampLength = height / Math.sin(theta);
+  const rampFootprint = rampLength * Math.cos(theta);
+
+  // working team uses a margin above the bare minimum, like a real crew would
+  const workingHaulers = Math.ceil(minHaulers * TEAM_MARGIN);
+  const haulSeconds = haulTimeSeconds(massT, rampLength, requiredForce, workingHaulers);
+  const returnSeconds = rampLength / RETURN_SPEED_MS;
+  const cycleSeconds = (haulSeconds || 0) + MANEUVER_SECONDS + returnSeconds;
+
+  return {
+    massT, W, theta, gravityComponent, normalForce, frictionForce,
+    requiredForce, minHaulers, ropesNeeded, height, rampLength, rampFootprint,
+    side: sideLength(n), blocks: blocksPerCourse[n],
+    workingHaulers, haulSeconds, returnSeconds, cycleSeconds
+  };
+}
+
+// total person-seconds of hauling work needed across the whole build,
+// used to back into how many teams must work in parallel to hit Herodotus's ~20yr figure
+let TOTAL_CYCLE_SECONDS = 0;
+for (let n = 0; n < N_COURSES; n++) {
+  // approximate using angle=8, mu=0.30 baseline for this aggregate figure
+  const massT = blockMassAt(n);
+  const massKg = massT*1000;
+  const W = massKg*G;
+  const theta0 = 8*Math.PI/180;
+  const req0 = W*Math.sin(theta0) + 0.30*W*Math.cos(theta0);
+  const minH0 = Math.ceil(req0/PERSON_FORCE_N);
+  const workH0 = Math.ceil(minH0*TEAM_MARGIN);
+  const ramp0 = cumHeights[n]/Math.sin(theta0);
+  const haul0 = haulTimeSeconds(massT, ramp0, req0, workH0) || 0;
+  const cycle0 = haul0 + MANEUVER_SECONDS + ramp0/RETURN_SPEED_MS;
+  TOTAL_CYCLE_SECONDS += cycle0 * blocksPerCourse[n];
+}
+const TOTAL_WORK_SECONDS_AVAILABLE = TOTAL_DAYS * WORK_HOURS_PER_DAY * 3600;
+const PARALLEL_TEAMS_NEEDED = Math.ceil(TOTAL_CYCLE_SECONDS / TOTAL_WORK_SECONDS_AVAILABLE);
+
+
+
+// ===================== DOM refs (timeline) =====================
+const courseTag = document.getElementById('courseTag');
+const sceneCanvas = document.getElementById('sceneCanvas');
+const sceneCtx = sceneCanvas.getContext('2d');
+const topCanvas = document.getElementById('topCanvas');
+const topCtx = topCanvas.getContext('2d');
+
+const playBtn = document.getElementById('playBtn');
+const stepBtn = document.getElementById('stepBtn');
+const resetBtn = document.getElementById('resetBtn');
+const speedSelect = document.getElementById('speedSelect');
+const courseScrub = document.getElementById('courseScrub');
+const scrubLabel = document.getElementById('scrubLabel');
+
+const statHeight = document.getElementById('statHeight');
+const statSide = document.getElementById('statSide');
+const statRamp = document.getElementById('statRamp');
+const statHaulers = document.getElementById('statHaulers');
+const statMass = document.getElementById('statMass');
+const statBlocks = document.getElementById('statBlocks');
+const statCycle = document.getElementById('statCycle');
+const progressFill = document.getElementById('progressFill');
+const progressCaption = document.getElementById('progressCaption');
+
+const angleSlider = document.getElementById('angleSlider');
+const angleVal = document.getElementById('angleVal');
+const surfacePills = document.querySelectorAll('#surfacePills .pill');
+
+const overviewToggleBtn = document.getElementById('overviewToggleBtn');
+const detailToggleBtn = document.getElementById('detailToggleBtn');
+const overviewLedger = document.getElementById('overviewLedger');
+const detailLedger = document.getElementById('detailLedger');
+const ledgerTitle = document.getElementById('ledgerTitle');
+const ledgerBody = document.getElementById('ledgerBody');
+const verdictBox = document.getElementById('verdictBox');
+const verdictStamp = document.getElementById('verdictStamp');
+const verdictDetail = document.getElementById('verdictDetail');
+
+const ovCourses = document.getElementById('ovCourses');
+const ovBlocks = document.getElementById('ovBlocks');
+const ovDays = document.getElementById('ovDays');
+const ovTeams = document.getElementById('ovTeams');
+const trendNote = document.getElementById('trendNote');
+
+// ===================== UPDATE STATS PANEL =====================
+function updateStatsPanel() {
+  const n = tState.course;
+  const p = computeCoursePhysics(n);
+
+  statHeight.innerHTML = fmt(p.height,1) + ' <small>m</small>';
+  statSide.innerHTML = fmt(p.side,1) + ' <small>m</small>';
+  statRamp.innerHTML = fmt(p.rampLength,1) + ' <small>m</small>';
+  statHaulers.innerHTML = fmt(p.minHaulers) + ' <small>people</small>';
+  statMass.innerHTML = fmt(p.massT,2) + ' <small>t</small>';
+  statBlocks.innerHTML = '~' + fmt(p.blocks) + ' <small>blocks</small>';
+
+  const cycleMin = p.cycleSeconds / 60;
+  statCycle.innerHTML = fmt(cycleMin,1) + ' <small>min — haul ' + fmt(p.haulSeconds/60,1) + 'm + seat 5.0m + return ' + fmt(p.returnSeconds/60,1) + 'm</small>';
+
+  const pct = (p.height / TOTAL_HEIGHT) * 100;
+  progressFill.style.width = pct + '%';
+  progressCaption.textContent = fmt(pct,1) + '% of total height reached';
+
+  courseTag.textContent = `COURSE ${n+1} / ${N_COURSES}`;
+  scrubLabel.textContent = `Course ${n+1}`;
+  courseScrub.value = n;
+
+  // overview ledger totals
+  const blocksSoFar = cumBlocks[n];
+  const daysSoFar = Math.round((blocksSoFar / TOTAL_BLOCKS) * TOTAL_DAYS);
+  ovCourses.innerHTML = `${n+1} <small>/ ${N_COURSES}</small>`;
+  ovBlocks.innerHTML = fmt(blocksSoFar) + (n === N_COURSES-1 ? ` <small>(model total — historical estimate ~2.3M)</small>` : '');
+  ovDays.innerHTML = fmt(daysSoFar) + ' <small>of ~' + fmt(TOTAL_DAYS) + '</small>';
+  ovTeams.innerHTML = fmt(PARALLEL_TEAMS_NEEDED) + ' <small>to hit Herodotus\'s 20yr pace</small>';
+
+  if (n > 5) {
+    trendNote.innerHTML = `At this course the ramp reaches <strong>${fmt(p.rampLength,0)}m</strong> long — versus a pyramid base of <strong>${fmt(BASE_LENGTH,0)}m</strong> — while the team needed has only dropped to <strong>${fmt(p.minHaulers)} haulers</strong>. One block now takes <strong>${fmt(cycleMin,0)} minutes</strong> start to finish, almost entirely because of the walk up and back. The ramp, not the labor force, is the limiting factor as height increases.`;
+  }
+
+  renderDetailLedger(p);
+}
+
+function renderDetailLedger(p) {
+  ledgerBody.innerHTML = `
+    <div class="line-item">
+      <div class="label">Block weight (W)
+        <span class="formula">mass × g &nbsp;=&nbsp; ${fmt(p.massT,2)}t × 9.81 m/s²</span>
+      </div>
+      <div class="result">${fmtN(p.W)}</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Gravity pulling down the ramp
+        <span class="formula">W × sin(${fmt(tState.angleDeg,1)}°)</span>
+      </div>
+      <div class="result">${fmtN(p.gravityComponent)}</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Friction resisting the sledge — ${tState.muLabel}
+        <span class="formula">μ(${fmt(tState.mu,2)}) × W × cos(${fmt(tState.angleDeg,1)}°)</span>
+      </div>
+      <div class="result">${fmtN(p.frictionForce)}</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Total force required
+        <span class="formula">gravity component + friction</span>
+      </div>
+      <div class="result">${fmtN(p.requiredForce)}</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Minimum haulers needed
+        <span class="formula">required force ÷ 245N per person</span>
+      </div>
+      <div class="result">${fmt(p.minHaulers)} people</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Tow ropes required
+        <span class="formula">≤ ${ROPE_HAULERS_MAX_PER_LINE} haulers per rope</span>
+      </div>
+      <div class="result">${p.ropesNeeded} rope${p.ropesNeeded>1?'s':''}</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Ramp length at this height
+        <span class="formula">height ÷ sin(${fmt(tState.angleDeg,1)}°)</span>
+      </div>
+      <div class="result">${fmt(p.rampLength,1)} m</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Ramp footprint from pyramid base
+        <span class="formula">ramp length × cos(${fmt(tState.angleDeg,1)}°)</span>
+      </div>
+      <div class="result">${fmt(p.rampFootprint,1)} m</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Working team size
+        <span class="formula">minimum × 1.3 margin, a real crew's working size</span>
+      </div>
+      <div class="result">${fmt(p.workingHaulers)} people</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Time hauling up the ramp
+        <span class="formula">accelerate to ~0.4 m/s walking pace, hold it</span>
+      </div>
+      <div class="result">${fmt(p.haulSeconds/60,1)} min</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Time seating the block
+        <span class="formula">lever into final position against its neighbor</span>
+      </div>
+      <div class="result">5.0 min</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Time walking the team back down
+        <span class="formula">ramp length ÷ ~1.2 m/s unloaded pace</span>
+      </div>
+      <div class="result">${fmt(p.returnSeconds/60,1)} min</div>
+    </div>
+    <div class="line-item">
+      <div class="label">Total cycle time, this one block
+        <span class="formula">haul + seat + return</span>
+      </div>
+      <div class="result">${fmt(p.cycleSeconds/60,1)} min</div>
+    </div>
+  `;
+  verdictStamp.textContent = `COURSE ${tState.course+1} FEASIBLE`;
+  verdictDetail.innerHTML = `${fmt(p.minHaulers)} haulers generate enough force to haul this course's ${fmt(p.massT,2)}t blocks up a ${fmt(p.rampLength,0)}m ramp using ${p.ropesNeeded} rope${p.ropesNeeded>1?'s':''}. A working crew of ${fmt(p.workingHaulers)} clears one block in about ${fmt(p.cycleSeconds/60,1)} minutes — meaning roughly <strong>${fmt(PARALLEL_TEAMS_NEEDED)} teams</strong> had to work in parallel across the whole project to finish in Herodotus's ~20 years.`;
+}
+
+// ===================== SIDE VIEW CANVAS =====================
+const SW = 1000, SH = 460;
+const GROUND_Y = 380;
+
+function drawSideScene() {
+  sceneCtx.clearRect(0,0,SW,SH);
+
+  // Sky gradient
+  const sky = sceneCtx.createLinearGradient(0, 0, 0, GROUND_Y);
+  sky.addColorStop(0, '#DDD0A8');
+  sky.addColorStop(1, '#F0E9D5');
+  sceneCtx.fillStyle = sky;
+  sceneCtx.fillRect(0, 0, SW, GROUND_Y);
+
+  // Sun with glow
+  const sunG = sceneCtx.createRadialGradient(910,50,0, 910,50,52);
+  sunG.addColorStop(0,   'rgba(240,200,100,1)');
+  sunG.addColorStop(0.35,'rgba(212,168,71,0.7)');
+  sunG.addColorStop(1,   'rgba(212,168,71,0)');
+  sceneCtx.fillStyle = sunG;
+  sceneCtx.beginPath();
+  sceneCtx.arc(910, 50, 52, 0, Math.PI*2);
+  sceneCtx.fill();
+
+  // Ground with gradient
+  const gnd = sceneCtx.createLinearGradient(0, GROUND_Y, 0, SH);
+  gnd.addColorStop(0, '#CEB882');
+  gnd.addColorStop(1, '#BCA46E');
+  sceneCtx.fillStyle = gnd;
+  sceneCtx.fillRect(0, GROUND_Y, SW, SH-GROUND_Y);
+  sceneCtx.strokeStyle = 'rgba(61,40,23,0.28)';
+  sceneCtx.lineWidth = 1.5;
+  sceneCtx.beginPath();
+  sceneCtx.moveTo(0, GROUND_Y); sceneCtx.lineTo(SW, GROUND_Y);
+  sceneCtx.stroke();
+
+  const n = tState.course;
+  const p = computeCoursePhysics(n);
+  const theta = p.theta;
+  const apexX = 740;
+  const baseY = GROUND_Y;
+  const fullHeightPx = TOTAL_HEIGHT * 2.6 * 0.6;
+  const baseHalfWidthPx = 230;
+  const heightPx = p.height * 2.6 * 0.6;
+
+  // pyramid shadow
+  sceneCtx.save();
+  sceneCtx.globalAlpha = 0.07;
+  sceneCtx.fillStyle = '#3D2817';
+  sceneCtx.beginPath();
+  sceneCtx.ellipse(apexX + 20, baseY + 5, baseHalfWidthPx * 0.85, 10, 0, 0, Math.PI*2);
+  sceneCtx.fill();
+  sceneCtx.restore();
+
+  // stepped pyramid with per-course shading
+  const steps = Math.max(6, Math.min(60, n+1));
+  for (let i = 0; i <= steps; i++) {
+    const frac = i/steps;
+    const courseIdx = Math.floor(frac * n);
+    const hFrac = (cumHeights[courseIdx] || 0) / TOTAL_HEIGHT;
+    const sideFrac = sideLength(courseIdx) / BASE_LENGTH;
+    const y = baseY - hFrac * fullHeightPx;
+    const halfW = sideFrac * baseHalfWidthPx;
+    const courseH = (fullHeightPx/steps) + 1;
+    // face shading — right side lit by sun
+    const faceG = sceneCtx.createLinearGradient(apexX - halfW, 0, apexX + halfW, 0);
+    faceG.addColorStop(0,    `rgba(155,130,85,0.92)`);
+    faceG.addColorStop(0.45, `rgba(210,185,135,0.92)`);
+    faceG.addColorStop(1,    `rgba(238,220,178,0.95)`);
+    sceneCtx.fillStyle = faceG;
+    sceneCtx.fillRect(apexX - halfW, y - courseH, halfW*2, courseH + 0.5);
+    // horizontal course joint lines every few courses
+    if (i % 4 === 0 && halfW > 4) {
+      sceneCtx.strokeStyle = 'rgba(61,40,23,0.13)';
+      sceneCtx.lineWidth = 0.8;
+      sceneCtx.beginPath();
+      sceneCtx.moveTo(apexX - halfW, y); sceneCtx.lineTo(apexX + halfW, y);
+      sceneCtx.stroke();
+    }
+  }
+
+  // pyramid outline
+  sceneCtx.strokeStyle = 'rgba(61,40,23,0.5)';
+  sceneCtx.lineWidth = 2;
+  sceneCtx.beginPath();
+  sceneCtx.moveTo(apexX - baseHalfWidthPx, baseY);
+  sceneCtx.lineTo(apexX, baseY - heightPx);
+  sceneCtx.lineTo(apexX + baseHalfWidthPx, baseY);
+  sceneCtx.stroke();
+
+  // ramp
+  const rampTopY = baseY - heightPx;
+  const rampRunPx = heightPx / Math.tan(theta);
+  const rampBaseX = apexX - baseHalfWidthPx - Math.min(rampRunPx, 600);
+  const clippedRampBaseX = Math.max(20, rampBaseX);
+  const rampTopX = apexX - baseHalfWidthPx * (1 - p.height/TOTAL_HEIGHT) - 4;
+
+  const rampG = sceneCtx.createLinearGradient(0, rampTopY, 0, baseY);
+  rampG.addColorStop(0, '#B8965C');
+  rampG.addColorStop(1, '#CBAA72');
+  sceneCtx.fillStyle = rampG;
+  sceneCtx.beginPath();
+  sceneCtx.moveTo(clippedRampBaseX, baseY);
+  sceneCtx.lineTo(rampTopX, rampTopY);
+  sceneCtx.lineTo(rampTopX, baseY);
+  sceneCtx.closePath();
+  sceneCtx.fill();
+  sceneCtx.strokeStyle = 'rgba(61,40,23,0.38)';
+  sceneCtx.lineWidth = 1.6;
+  sceneCtx.beginPath();
+  sceneCtx.moveTo(clippedRampBaseX, baseY); sceneCtx.lineTo(rampTopX, rampTopY);
+  sceneCtx.stroke();
+
+  // blocks in transit
+  const blockCount = 3;
+  for (let i = 0; i < blockCount; i++) {
+    let t = (tState.subProgress + i/blockCount) % 1;
+    t = t * 0.92;
+    const bx = clippedRampBaseX + t*(rampTopX - clippedRampBaseX);
+    const by = baseY + t*(rampTopY - baseY);
+    drawTravelingBlock(bx, by, theta, i===0);
+  }
+
+  // ramp label pill
+  const midX = (clippedRampBaseX + rampTopX) / 2;
+  const midY = (baseY + rampTopY) / 2;
+  const lbl = `ramp ≈ ${fmt(p.rampLength,0)}m`;
+  sceneCtx.font = 'bold 11px JetBrains Mono, monospace';
+  const tw = sceneCtx.measureText(lbl).width;
+  sceneCtx.fillStyle = 'rgba(251,246,234,0.88)';
+  sceneCtx.beginPath();
+  sceneCtx.roundRect(midX - tw/2 - 7, midY + 6, tw + 14, 19, 9);
+  sceneCtx.fill();
+  sceneCtx.fillStyle = 'rgba(61,40,23,0.78)';
+  sceneCtx.textAlign = 'center';
+  sceneCtx.fillText(lbl, midX, midY + 19);
+  sceneCtx.textAlign = 'left';
+
+  if (rampBaseX < 20) {
+    sceneCtx.fillStyle = 'rgba(181,70,47,0.82)';
+    sceneCtx.font = '11px JetBrains Mono, monospace';
+    sceneCtx.fillText('ramp extends off-frame →', 28, baseY - 14);
+  }
+}
+
+function drawTravelingBlock(x, y, angleRad, withHaulers) {
+  sceneCtx.save();
+  sceneCtx.translate(x, y);
+  sceneCtx.rotate(-angleRad);
+  // sledge/sled
+  sceneCtx.fillStyle = '#6A4C2E';
+  sceneCtx.fillRect(-18, -5, 38, 5);
+  // block body
+  const bg = sceneCtx.createLinearGradient(0,-28,0,-5);
+  bg.addColorStop(0, '#F0E7CF');
+  bg.addColorStop(1, '#D4C098');
+  sceneCtx.fillStyle = bg;
+  sceneCtx.fillRect(-16, -28, 32, 23);
+  // top highlight
+  sceneCtx.fillStyle = 'rgba(255,255,255,0.18)';
+  sceneCtx.fillRect(-16, -28, 32, 6);
+  sceneCtx.strokeStyle = 'rgba(61,40,23,0.4)';
+  sceneCtx.lineWidth = 1;
+  sceneCtx.strokeRect(-16, -28, 32, 23);
+  sceneCtx.restore();
+
+  if (withHaulers) {
+    // rope from block
+    sceneCtx.strokeStyle = 'rgba(100,70,40,0.6)';
+    sceneCtx.lineWidth = 2;
+    let lastX = x + Math.cos(angleRad)*22, lastY = y - Math.sin(angleRad)*22;
+    for (let i=0; i<7; i++) {
+      const d = 18*(i+1);
+      const hx = x + Math.cos(angleRad)*(22+d);
+      const hy = y - Math.sin(angleRad)*(22+d);
+      sceneCtx.beginPath();
+      sceneCtx.moveTo(lastX, lastY); sceneCtx.lineTo(hx, hy);
+      sceneCtx.stroke();
+      lastX=hx; lastY=hy;
+      drawTinyHauler(hx, hy, tState.playing);
+    }
+  }
+}
+
+function drawTinyHauler(x, y, animated) {
+  const bob = animated ? Math.sin(Date.now()/105 + x*0.4)*1.8 : 0;
+  sceneCtx.strokeStyle = '#3D2817';
+  sceneCtx.lineWidth = 1.6;
+  const hy = y - 14 + bob;
+  // head
+  sceneCtx.beginPath();
+  sceneCtx.arc(x, hy - 2, 3, 0, Math.PI*2);
+  sceneCtx.stroke();
+  // torso
+  sceneCtx.beginPath();
+  sceneCtx.moveTo(x, hy+1);
+  sceneCtx.lineTo(x+1, y - 1 + bob);
+  sceneCtx.stroke();
+  // legs
+  sceneCtx.beginPath();
+  sceneCtx.moveTo(x+1, y-1+bob);
+  sceneCtx.lineTo(x-4, y+7);
+  sceneCtx.moveTo(x+1, y-1+bob);
+  sceneCtx.lineTo(x+6, y+7);
+  sceneCtx.stroke();
+  // arms pulling rope
+  sceneCtx.beginPath();
+  sceneCtx.moveTo(x, hy+3);
+  sceneCtx.lineTo(x-8, hy-1+bob);
+  sceneCtx.stroke();
+}
+
+// ===================== TOP-DOWN CANVAS =====================
+const TW = 1000, TH = 280;
+function drawTopScene() {
+  topCtx.clearRect(0,0,TW,TH);
+  const n = tState.course;
+  const p = computeCoursePhysics(n);
+
+  const cx = 620, cy = 140;
+  const PXM = 0.85; // px per meter, compressed
+
+  // full base footprint (faint, always shown for reference)
+  const baseHalfPx = (BASE_LENGTH/2) * PXM;
+  topCtx.strokeStyle = 'rgba(61,40,23,0.25)';
+  topCtx.setLineDash([4,4]);
+  topCtx.lineWidth = 1;
+  topCtx.strokeRect(cx-baseHalfPx, cy-baseHalfPx, baseHalfPx*2, baseHalfPx*2);
+  topCtx.setLineDash([]);
+
+  // current course square (shrinking)
+  const curHalfPx = (p.side/2) * PXM;
+  topCtx.fillStyle = '#D9C9A3';
+  topCtx.fillRect(cx-curHalfPx, cy-curHalfPx, curHalfPx*2, curHalfPx*2);
+  topCtx.strokeStyle = 'rgba(61,40,23,0.45)';
+  topCtx.lineWidth = 1.5;
+  topCtx.strokeRect(cx-curHalfPx, cy-curHalfPx, curHalfPx*2, curHalfPx*2);
+
+  // ramp footprint as a line extending from one face
+  const rampPx = Math.min(p.rampFootprint * PXM, 470);
+  topCtx.strokeStyle = 'rgba(193,127,62,0.8)';
+  topCtx.lineWidth = 6;
+  topCtx.beginPath();
+  topCtx.moveTo(cx-curHalfPx, cy);
+  topCtx.lineTo(cx-curHalfPx-rampPx, cy);
+  topCtx.stroke();
+
+  topCtx.fillStyle = 'rgba(61,40,23,0.7)';
+  topCtx.font = '11px JetBrains Mono, monospace';
+  topCtx.textAlign = 'center';
+  topCtx.fillText(`ramp reach: ${fmt(p.rampFootprint,0)}m`, cx-curHalfPx-rampPx/2, cy-14);
+  topCtx.fillText(`course side: ${fmt(p.side,0)}m`, cx, cy+curHalfPx+18);
+  if (p.rampFootprint*PXM > 470) {
+    topCtx.fillStyle = 'rgba(181,70,47,0.8)';
+    topCtx.fillText('(ramp extends further off-frame)', cx-curHalfPx-235, cy-28);
+  }
+  topCtx.textAlign = 'left';
+}
+
+// ===================== TIMELINE ANIMATION LOOP =====================
+let tAnimFrame;
+function timelineAnimate() {
+  if (tState.playing) {
+    tState.subProgress += 0.006 * tState.speed;
+    if (tState.subProgress >= 1) {
+      tState.subProgress = 0;
+      if (tState.course < N_COURSES - 1) {
+        tState.course++;
+        updateStatsPanel();
+      } else {
+        tState.playing = false;
+        playBtn.textContent = '▶ Build';
+      }
+    }
+  }
+  drawSideScene();
+  drawTopScene();
+  tAnimFrame = requestAnimationFrame(timelineAnimate);
+}
+
+// ===================== TIMELINE EVENTS =====================
+playBtn.addEventListener('click', () => {
+  tState.playing = !tState.playing;
+  playBtn.textContent = tState.playing ? '⏸ Pause' : '▶ Build';
+});
+stepBtn.addEventListener('click', () => {
+  tState.playing = false;
+  playBtn.textContent = '▶ Build';
+  if (tState.course < N_COURSES - 1) {
+    tState.course++;
+    tState.subProgress = 0;
+    updateStatsPanel();
+  }
+});
+resetBtn.addEventListener('click', () => {
+  tState.playing = false;
+  tState.course = 0;
+  tState.subProgress = 0;
+  playBtn.textContent = '▶ Build';
+  updateStatsPanel();
+});
+speedSelect.addEventListener('change', () => { tState.speed = parseFloat(speedSelect.value); });
+courseScrub.addEventListener('input', () => {
+  tState.playing = false;
+  playBtn.textContent = '▶ Build';
+  tState.course = parseInt(courseScrub.value);
+  tState.subProgress = 0;
+  updateStatsPanel();
+});
+angleSlider.addEventListener('input', () => {
+  tState.angleDeg = parseFloat(angleSlider.value);
+  angleVal.textContent = fmt(tState.angleDeg,1) + '°';
+  updateStatsPanel();
+});
+surfacePills.forEach(pill => {
+  pill.addEventListener('click', () => {
+    surfacePills.forEach(p2=>p2.classList.remove('active'));
+    pill.classList.add('active');
+    tState.mu = parseFloat(pill.dataset.mu);
+    tState.muLabel = pill.dataset.label;
+    updateStatsPanel();
+  });
+});
+overviewToggleBtn.addEventListener('click', () => {
+  overviewToggleBtn.classList.add('active');
+  detailToggleBtn.classList.remove('active');
+  overviewLedger.classList.remove('hidden');
+  detailLedger.classList.add('hidden');
+  ledgerTitle.textContent = 'Course Overview';
+});
+detailToggleBtn.addEventListener('click', () => {
+  detailToggleBtn.classList.add('active');
+  overviewToggleBtn.classList.remove('active');
+  detailLedger.classList.remove('hidden');
+  overviewLedger.classList.add('hidden');
+  ledgerTitle.textContent = 'Force Calculation';
+});
+
+// ===================== MODE SWITCH =====================
+const modeTimelineBtn = document.getElementById('modeTimelineBtn');
+const modeSingleBtn = document.getElementById('modeSingleBtn');
+const timelineMode = document.getElementById('timelineMode');
+const singleMode = document.getElementById('singleMode');
+
+modeTimelineBtn.addEventListener('click', () => {
+  modeTimelineBtn.classList.add('active');
+  modeSingleBtn.classList.remove('active');
+  timelineMode.classList.remove('hidden');
+  singleMode.classList.add('hidden');
+  resizeCanvases();
+  setTimeout(reportHeightToParent, 50);
+});
+modeSingleBtn.addEventListener('click', () => {
+  modeSingleBtn.classList.add('active');
+  modeTimelineBtn.classList.remove('active');
+  singleMode.classList.remove('hidden');
+  timelineMode.classList.add('hidden');
+  resizeCanvases();
+  setTimeout(reportHeightToParent, 50);
+});
+
+// ===================== SINGLE BLOCK MODE (v1, preserved) =====================
+let sState = { massT: 2.5, angleDeg: 8, mu: 0.30, muLabel: 'Wetted sand', running: false, blockProgress: 0, velocity: 0, strainUntil: 0 };
+
+const singleMassSlider = document.getElementById('singleMassSlider');
+const singleMassVal = document.getElementById('singleMassVal');
+const singleAngleSlider = document.getElementById('singleAngleSlider');
+const singleAngleVal = document.getElementById('singleAngleVal');
+const singleSurfacePills = document.querySelectorAll('#singleSurfacePills .pill');
+const singleRunBtn = document.getElementById('singleRunBtn');
+const singleResetBtn = document.getElementById('singleResetBtn');
+const singleStatus = document.getElementById('singleStatus');
+const singleLedgerBody = document.getElementById('singleLedgerBody');
+const singleVerdictBox = document.getElementById('singleVerdictBox');
+const singleVerdictStamp = document.getElementById('singleVerdictStamp');
+const singleVerdictDetail = document.getElementById('singleVerdictDetail');
+const singleCanvas = document.getElementById('singleCanvas');
+const sCtx = singleCanvas.getContext('2d');
+
+function computeSinglePhysics() {
+  const massKg = sState.massT*1000;
+  const W = massKg*G;
+  const theta = sState.angleDeg*Math.PI/180;
+  const gravityComponent = W*Math.sin(theta);
+  const normalForce = W*Math.cos(theta);
+  const frictionForce = sState.mu*normalForce;
+  const requiredForce = gravityComponent+frictionForce;
+  const minHaulersNeeded = Math.ceil(requiredForce/PERSON_FORCE_N);
+  const ropesNeeded = Math.ceil(minHaulersNeeded/ROPE_HAULERS_MAX_PER_LINE);
+  const activeHaulers = minHaulersNeeded;
+  const availableForce = activeHaulers*PERSON_FORCE_N;
+  const netForce = availableForce-requiredForce;
+  const feasible = netForce>0;
+  const acceleration = feasible? netForce/massKg : 0;
+  return {massKg,W,theta,gravityComponent,normalForce,frictionForce,requiredForce,minHaulersNeeded,ropesNeeded,activeHaulers,availableForce,netForce,feasible,acceleration};
+}
+
+function renderSingleLedger(p) {
+  singleLedgerBody.innerHTML = `
+    <div class="line-item"><div class="label">Block weight (W)<span class="formula">mass × g = ${fmt(sState.massT,1)}t × 9.81 m/s²</span></div><div class="result">${fmtN(p.W)}</div></div>
+    <div class="line-item"><div class="label">Gravity pulling down the ramp<span class="formula">W × sin(${fmt(sState.angleDeg,1)}°)</span></div><div class="result">${fmtN(p.gravityComponent)}</div></div>
+    <div class="line-item"><div class="label">Friction resisting the sledge — ${sState.muLabel}<span class="formula">μ(${fmt(sState.mu,2)}) × W × cos(${fmt(sState.angleDeg,1)}°)</span></div><div class="result">${fmtN(p.frictionForce)}</div></div>
+    <div class="line-item"><div class="label">Total force required<span class="formula">gravity + friction</span></div><div class="result">${fmtN(p.requiredForce)}</div></div>
+    <div class="line-item"><div class="label">Minimum haulers needed<span class="formula">required force ÷ 245N</span></div><div class="result">${fmt(p.minHaulersNeeded)} people</div></div>
+    <div class="line-item"><div class="label">Tow ropes required<span class="formula">≤ ${ROPE_HAULERS_MAX_PER_LINE} per rope</span></div><div class="result">${p.ropesNeeded} rope${p.ropesNeeded>1?'s':''}</div></div>
+  `;
+  singleVerdictBox.style.borderColor = p.feasible ? 'var(--ochre)' : 'var(--red-ochre)';
+  singleVerdictStamp.style.color = p.feasible ? 'var(--ochre)' : '#E0917D';
+  singleVerdictStamp.textContent = p.feasible ? 'FEASIBLE' : 'NOT FEASIBLE';
+  singleVerdictDetail.innerHTML = `${fmt(p.activeHaulers)} haulers generate <strong>${fmtN(p.availableForce)}</strong> against a required <strong>${fmtN(p.requiredForce)}</strong>, using <strong>${p.ropesNeeded} rope${p.ropesNeeded>1?'s':''}</strong>.`;
+}
+
+function updateSingle() { renderSingleLedger(computeSinglePhysics()); }
+
+singleMassSlider.addEventListener('input', () => { sState.massT=parseFloat(singleMassSlider.value); singleMassVal.textContent=fmt(sState.massT,1)+' t'; updateSingle(); });
+singleAngleSlider.addEventListener('input', () => { sState.angleDeg=parseFloat(singleAngleSlider.value); singleAngleVal.textContent=fmt(sState.angleDeg,1)+'°'; updateSingle(); });
+singleSurfacePills.forEach(pill=>{ pill.addEventListener('click', ()=>{ singleSurfacePills.forEach(p2=>p2.classList.remove('active')); pill.classList.add('active'); sState.mu=parseFloat(pill.dataset.mu); sState.muLabel=pill.dataset.label; updateSingle(); }); });
+
+const SSW=1000, SSH=520, SGROUND_Y=430, SRAMP_BASE_X=120;
+function drawSingleScene() {
+  sCtx.clearRect(0,0,SSW,SSH);
+
+  // sky gradient
+  const sSky = sCtx.createLinearGradient(0,0,0,SGROUND_Y);
+  sSky.addColorStop(0,'#DDD0A8'); sSky.addColorStop(1,'#F0E9D5');
+  sCtx.fillStyle=sSky; sCtx.fillRect(0,0,SSW,SGROUND_Y);
+
+  // sun glow
+  const ssg = sCtx.createRadialGradient(880,68,0,880,68,56);
+  ssg.addColorStop(0,'rgba(240,200,100,1)'); ssg.addColorStop(0.4,'rgba(212,168,71,0.65)'); ssg.addColorStop(1,'rgba(212,168,71,0)');
+  sCtx.fillStyle=ssg; sCtx.beginPath(); sCtx.arc(880,68,56,0,Math.PI*2); sCtx.fill();
+
+  // pyramid silhouette in background (right side, faint)
+  sCtx.fillStyle='rgba(193,127,62,0.13)';
+  sCtx.beginPath(); sCtx.moveTo(680,SGROUND_Y); sCtx.lineTo(800,255); sCtx.lineTo(920,SGROUND_Y); sCtx.closePath(); sCtx.fill();
+  sCtx.strokeStyle='rgba(193,127,62,0.25)'; sCtx.lineWidth=1;
+  sCtx.beginPath(); sCtx.moveTo(680,SGROUND_Y); sCtx.lineTo(800,255); sCtx.lineTo(920,SGROUND_Y); sCtx.stroke();
+
+  const angleRad = sState.angleDeg*Math.PI/180;
+  const rampLength = 560;
+  const rampTopY = SGROUND_Y - rampLength*Math.sin(angleRad);
+  const rampTopXActual = SRAMP_BASE_X + rampLength*Math.cos(angleRad);
+
+  // ground
+  const gnd2 = sCtx.createLinearGradient(0,SGROUND_Y,0,SSH);
+  gnd2.addColorStop(0,'#CEB882'); gnd2.addColorStop(1,'#BCA46E');
+  sCtx.fillStyle=gnd2; sCtx.fillRect(0,SGROUND_Y,SSW,SSH-SGROUND_Y);
+  sCtx.strokeStyle='rgba(61,40,23,0.28)'; sCtx.lineWidth=1.5;
+  sCtx.beginPath(); sCtx.moveTo(0,SGROUND_Y); sCtx.lineTo(SSW,SGROUND_Y); sCtx.stroke();
+
+  // ramp with gradient
+  const rg2 = sCtx.createLinearGradient(0,rampTopY,0,SGROUND_Y);
+  rg2.addColorStop(0,'#B8965C'); rg2.addColorStop(1,'#CBAA72');
+  sCtx.fillStyle=rg2;
+  sCtx.beginPath(); sCtx.moveTo(SRAMP_BASE_X,SGROUND_Y); sCtx.lineTo(rampTopXActual,rampTopY); sCtx.lineTo(rampTopXActual,SGROUND_Y); sCtx.closePath(); sCtx.fill();
+  sCtx.strokeStyle='rgba(61,40,23,0.35)'; sCtx.lineWidth=1.8;
+  sCtx.beginPath(); sCtx.moveTo(SRAMP_BASE_X,SGROUND_Y); sCtx.lineTo(rampTopXActual,rampTopY); sCtx.stroke();
+
+  const t = sState.blockProgress;
+  let blockBaseX = SRAMP_BASE_X + t*(rampTopXActual-SRAMP_BASE_X);
+  let blockBaseY = SGROUND_Y + t*(rampTopY-SGROUND_Y);
+  if (Date.now() < sState.strainUntil) { blockBaseX += Math.sin(Date.now()/28)*3.5; }
+
+  const sizeScale = 0.6 + Math.min(sState.massT,80)/80*0.9;
+  const blockW = 70*sizeScale, blockH = 46*sizeScale;
+
+  sCtx.save(); sCtx.translate(blockBaseX,blockBaseY); sCtx.rotate(-angleRad);
+  // sledge
+  sCtx.fillStyle='#6A4C2E'; sCtx.fillRect(-blockW/2-7,-9,blockW+14,9);
+  // block
+  const bg2 = sCtx.createLinearGradient(0,-blockH-9,0,-9);
+  bg2.addColorStop(0,'#F0E7CF'); bg2.addColorStop(1,'#D4C098');
+  sCtx.fillStyle=bg2; sCtx.fillRect(-blockW/2,-blockH-9,blockW,blockH);
+  // top highlight
+  sCtx.fillStyle='rgba(255,255,255,0.15)'; sCtx.fillRect(-blockW/2,-blockH-9,blockW,blockH*0.25);
+  sCtx.strokeStyle='rgba(61,40,23,0.4)'; sCtx.lineWidth=1.5; sCtx.strokeRect(-blockW/2,-blockH-9,blockW,blockH);
+  sCtx.restore();
+
+  const p = computeSinglePhysics();
+  const haulerCount = Math.min(p.activeHaulers, 28);
+  const ropeStartX = blockBaseX + Math.cos(angleRad)*(blockW/2+12);
+  const ropeStartY = blockBaseY - Math.sin(angleRad)*(blockW/2+12);
+  sCtx.strokeStyle='rgba(100,70,40,0.55)'; sCtx.lineWidth=2.2;
+  const spacing=24;
+  let lastX=ropeStartX, lastY=ropeStartY;
+  for (let i=0; i<haulerCount; i++) {
+    const dist=(i+1)*spacing;
+    const hx=ropeStartX+Math.cos(angleRad)*dist;
+    const hy=ropeStartY-Math.sin(angleRad)*dist;
+    if (hx>rampTopXActual+70) break;
+    sCtx.beginPath(); sCtx.moveTo(lastX,lastY); sCtx.lineTo(hx,hy); sCtx.stroke();
+    lastX=hx; lastY=hy;
+    drawSingleHauler(hx,hy,sState.running);
+  }
+  if (p.activeHaulers>haulerCount) {
+    const lbl2 = `+${p.activeHaulers-haulerCount} more haulers ahead`;
+    sCtx.font='bold 12px JetBrains Mono, monospace';
+    const tw2 = sCtx.measureText(lbl2).width;
+    sCtx.fillStyle='rgba(251,246,234,0.88)';
+    sCtx.beginPath(); sCtx.roundRect(lastX - tw2/2 - 8, lastY-56, tw2+16, 20, 9); sCtx.fill();
+    sCtx.fillStyle='rgba(61,40,23,0.75)';
+    sCtx.textAlign='center'; sCtx.fillText(lbl2, lastX, lastY-41); sCtx.textAlign='left';
+  }
+}
+function drawSingleHauler(x,y,animated) {
+  const bob = animated? Math.sin(Date.now()/115+x*0.3)*2.2 : 0;
+  sCtx.strokeStyle='#3D2817'; sCtx.lineWidth=2.4;
+  const headY=y-28+bob;
+  // head
+  sCtx.beginPath(); sCtx.arc(x,headY-5,5,0,Math.PI*2); sCtx.stroke();
+  // torso
+  sCtx.beginPath(); sCtx.moveTo(x,headY); sCtx.lineTo(x+3,y-5+bob); sCtx.stroke();
+  // legs
+  sCtx.beginPath();
+  sCtx.moveTo(x+3,y-5+bob); sCtx.lineTo(x-5,y+10);
+  sCtx.moveTo(x+3,y-5+bob); sCtx.lineTo(x+12,y+10);
+  sCtx.stroke();
+  // arms pulling
+  sCtx.beginPath(); sCtx.moveTo(x,headY-2); sCtx.lineTo(x-10,headY+3+bob); sCtx.stroke();
+}
+
+let sAnimFrame;
+function singleAnimate() {
+  if (sState.running) {
+    const p = computeSinglePhysics();
+    if (p.feasible) {
+      sState.velocity += p.acceleration*0.05;
+      sState.velocity = Math.min(sState.velocity,0.4);
+      sState.blockProgress += sState.velocity*0.012;
+      if (sState.blockProgress>=1) {
+        sState.blockProgress=1; sState.running=false;
+        singleStatus.textContent='block reached the top ✓';
+        singleRunBtn.disabled=false; singleRunBtn.textContent='Pull the Rope';
+      }
+    } else {
+      sState.running=false; sState.strainUntil=Date.now()+600;
+      singleStatus.textContent='haulers strain — block does not move';
+      singleRunBtn.disabled=false; singleRunBtn.textContent='Pull the Rope';
+    }
+  }
+  drawSingleScene();
+  sAnimFrame = requestAnimationFrame(singleAnimate);
+}
+singleRunBtn.addEventListener('click', () => { if (sState.blockProgress>=1) return; sState.running=true; singleRunBtn.disabled=true; singleRunBtn.textContent='Hauling...'; singleStatus.textContent='pulling...'; });
+singleResetBtn.addEventListener('click', () => { sState.running=false; sState.blockProgress=0; sState.velocity=0; singleRunBtn.disabled=false; singleRunBtn.textContent='Pull the Rope'; singleStatus.textContent='awaiting haul'; });
+
+// ===================== RESPONSIVE =====================
+function resizeCanvases() {
+  if (sceneCanvas.offsetWidth > 0) sceneCanvas.style.height = (sceneCanvas.offsetWidth*(SH/SW))+'px';
+  if (topCanvas.offsetWidth > 0) topCanvas.style.height = (topCanvas.offsetWidth*(TH/TW))+'px';
+  if (singleCanvas.offsetWidth > 0) singleCanvas.style.height = (singleCanvas.offsetWidth*(SSH/SSW))+'px';
+}
+window.addEventListener('resize', resizeCanvases);
+
+// report this document's height to a parent window embedding it via iframe,
+// using postMessage so it works even when file:// or cross-origin rules block
+// direct contentDocument access from the parent's side.
+function reportHeightToParent() {
+  if (window.parent && window.parent !== window) {
+    const h = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+    window.parent.postMessage({ type: 'pyramid-sim-height', height: h }, '*');
+  }
+}
+window.addEventListener('resize', reportHeightToParent);
+if (window.ResizeObserver) {
+  const ro = new ResizeObserver(reportHeightToParent);
+  ro.observe(document.body);
+  ro.observe(document.documentElement);
+}
+[100, 300, 700, 1500, 2500].forEach(t => setTimeout(reportHeightToParent, t));
+
+// ===================== INIT =====================
+updateStatsPanel();
+updateSingle();
+resizeCanvases();
+timelineAnimate();
+singleAnimate();
+reportHeightToParent();
+</script>
+</body>
+</html>
