@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raising the Stone — How We Reasoned Through the Great Pyramid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --limestone: #E8DCC4;
+    --limestone-light: #F2EAD8;
+    --paper: #FBF6EA;
+    --ink: #3D2817;
+    --ink-soft: rgba(61, 40, 23, 0.72);
+    --sandstone: #C17F3E;
+    --sandstone-dark: #A8652A;
+    --papyrus-green: #7C8B7F;
+    --basalt: #1A1410;
+    --ochre: #D4A847;
+    --red-ochre: #B5462F;
+    --line: rgba(61, 40, 23, 0.16);
+    --shadow-soft: rgba(61, 40, 23, 0.12);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--limestone);
+    background-image:
+      radial-gradient(circle at 12% 6%, rgba(193,127,62,0.07), transparent 38%),
+      radial-gradient(circle at 88% 94%, rgba(124,139,127,0.07), transparent 38%);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.75rem;
+  }
+  .container-wide {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 1.75rem;
+  }
+
+  /* ============ TYPOGRAPHY ============ */
+  h1, h2, h3 {
+    font-family: 'Fraunces', serif;
+    font-optical-sizing: auto;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.08;
+  }
+  p { line-height: 1.7; margin: 0 0 1.3rem; font-size: 1.05rem; color: var(--ink); }
+  p.lede { font-size: 1.22rem; line-height: 1.6; color: var(--ink-soft); }
+  a { color: var(--sandstone-dark); }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sandstone-dark);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    padding: 5.5rem 0 4rem;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero h1 {
+    font-weight: 600;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    letter-spacing: -0.015em;
+    margin-bottom: 1.3rem;
+  }
+  .hero .lede {
+    max-width: 600px;
+    margin: 0 auto 1.8rem;
+  }
+  .hero .scroll-cue {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--papyrus-green);
+    margin-top: 2.5rem;
+  }
+  .hero .scroll-cue::after {
+    content: '↓';
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(5px); }
+  }
+
+  /* ============ SECTION RHYTHM ============ */
+  section.story {
+    padding: 4.5rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  section.story:last-of-type { border-bottom: none; }
+
+  .section-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--papyrus-green);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.8rem;
+  }
+
+  h2.section-title {
+    font-weight: 600;
+    font-size: clamp(1.7rem, 3.6vw, 2.3rem);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* ============ FIELD NOTE / CALLOUT BOXES ============ */
+  .field-note {
+    background: var(--limestone-light);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--sandstone);
+    border-radius: 3px;
+    padding: 1.4rem 1.6rem;
+    margin: 1.8rem 0;
+  }
+  .field-note .fn-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sandstone-dark);
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+  }
+  .field-note p:last-child { margin-bottom: 0; }
+  .field-note p { font-size: 0.98rem; }
+
+  /* the "bug we found" box gets a different treatment - honest correction */
+  .field-note.correction {
+    border-left-color: var(--red-ochre);
+  }
+  .field-note.correction .fn-label { color: var(--red-ochre); }
+
+  /* ============ MATH LEDGER (reused styling from simulator, condensed) ============ */
+  .mini-ledger {
+    background: var(--basalt);
+    border-radius: 4px;
+    color: var(--limestone-light);
+    padding: 1.5rem 1.7rem;
+    margin: 1.8rem 0;
+  }
+  .mini-ledger .ml-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ochre);
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+  .mini-line {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgba(232,220,196,0.1);
+    align-items: baseline;
+  }
+  .mini-line:last-child { border-bottom: none; }
+  .mini-line .ml-label { font-size: 0.88rem; color: rgba(232,220,196,0.75); }
+  .mini-line .ml-formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--papyrus-green);
+    display: block;
+    margin-top: 0.2rem;
+  }
+  .mini-line .ml-result {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--limestone-light);
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  /* ============ STAT PAIR / CONTRAST CALLOUT ============ */
+  .contrast-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin: 1.8rem 0;
+  }
+  @media (max-width: 640px) { .contrast-pair { grid-template-columns: 1fr; } }
+  .contrast-box {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.3rem 1.4rem;
+    background: var(--paper);
+  }
+  .contrast-box.feasible { border-top: 3px solid var(--ochre); }
+  .contrast-box.hard { border-top: 3px solid var(--red-ochre); }
+  .contrast-box .cb-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--papyrus-green);
+    margin-bottom: 0.5rem;
+  }
+  .contrast-box .cb-value {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.7rem;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .contrast-box .cb-detail { font-size: 0.86rem; color: var(--ink-soft); line-height: 1.5; }
+
+  /* ============ INLINE STAT STRIP ============ */
+  .stat-strip {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+    padding: 1.3rem 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .stat-strip .ss-item { flex: 1; min-width: 130px; }
+  .stat-strip .ss-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 1.6rem;
+    color: var(--sandstone-dark);
+    display: block;
+  }
+  .stat-strip .ss-label {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-top: 0.2rem;
+  }
+
+  /* ============ SIMULATOR EMBED SECTION ============ */
+  section.sim-section {
+    padding: 4.5rem 0;
+    background: var(--limestone-light);
+    border-bottom: 1px solid var(--line);
+    border-top: 1px solid var(--line);
+  }
+  .sim-frame-wrap {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 0 var(--shadow-soft), 0 16px 40px -24px var(--shadow-soft);
+    background: var(--paper);
+  }
+  .sim-frame-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .sim-frame-header .dots { display: flex; gap: 0.4rem; }
+  .sim-frame-header .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+  .sim-frame-header .dot:nth-child(1) { background: rgba(181,70,47,0.5); }
+  .sim-frame-header .dot:nth-child(2) { background: rgba(212,168,71,0.65); }
+  .sim-frame-header .dot:nth-child(3) { background: rgba(124,139,127,0.55); }
+  .sim-frame-header .sim-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    color: var(--papyrus-green);
+    margin-left: 0.4rem;
+  }
+  #simFrame {
+    width: 100%;
+    border: none;
+    display: block;
+    background: var(--limestone);
+  }
+  .sim-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-top: 1.2rem;
+  }
+
+  /* ============ TIMELINE / PROCESS MARKERS for the "how we thought through it" framing ============ */
+  .think-marker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--sandstone-dark);
+    background: rgba(193,127,62,0.1);
+    border: 1px solid rgba(193,127,62,0.25);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    margin-bottom: 1.2rem;
+    font-weight: 600;
+  }
+
+  /* ============ FOOTER ============ */
+  footer.story-footer {
+    padding: 3.5rem 0 4rem;
+    text-align: center;
+  }
+  footer.story-footer p {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    max-width: 500px;
+    margin: 0 auto 0.5rem;
+  }
+  footer.story-footer .credits {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    opacity: 0.6;
+    margin-top: 1.5rem;
+    line-height: 1.7;
+  }
+
+  strong { color: var(--ink); font-weight: 700; }
+
+  ul.story-list { padding-left: 1.3rem; margin: 0 0 1.3rem; }
+  ul.story-list li { margin-bottom: 0.6rem; line-height: 1.65; font-size: 1.05rem; }
+
+  /* ============ READING PROGRESS ============ */
+  .reading-progress {
+    position: fixed;
+    top: 0; left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--sandstone), var(--ochre));
+    z-index: 200;
+    transition: width 0.08s linear;
+    pointer-events: none;
+  }
+
+  /* ============ HERO PYRAMID ============ */
+  .hero-pyramid-wrap {
+    margin: 0 auto 2rem;
+    display: flex;
+    justify-content: center;
+  }
+  .hero-pyramid {
+    width: 160px;
+    height: auto;
+    opacity: 0.8;
+    filter: drop-shadow(0 6px 20px rgba(193,127,62,0.25));
+  }
+  @keyframes pyramidRise {
+    from { opacity: 0; transform: translateY(14px) scale(0.96); }
+    to   { opacity: 0.8; transform: none; }
+  }
+  .hero-pyramid { animation: pyramidRise 1.2s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
+
+  /* ============ SCROLL REVEAL ============ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-d1 { transition-delay: 0.08s; }
+  .reveal-d2 { transition-delay: 0.16s; }
+  .reveal-d3 { transition-delay: 0.24s; }
+
+  /* ============ HOVER LIFTS ============ */
+  .contrast-box {
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .contrast-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px -8px rgba(61,40,23,0.18);
+  }
+  .field-note {
+    transition: box-shadow 0.2s ease;
+  }
+  .field-note:hover {
+    box-shadow: 0 2px 14px rgba(193,127,62,0.1);
+  }
+
+  /* ============ SECTION TITLE ACCENT ============ */
+  h2.section-title::after {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 2px;
+    background: var(--sandstone);
+    margin-top: 0.9rem;
+    border-radius: 1px;
+    opacity: 0.65;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; }
+    .hero-pyramid { opacity: 0.8; }
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 4rem 0 3rem; }
+    section.story, section.sim-section { padding: 3.2rem 0; }
+    .stat-strip { gap: 1.2rem; }
+    .hero-pyramid { width: 110px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="reading-progress" id="readingProgress"></div>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-pyramid-wrap" aria-hidden="true">
+      <svg class="hero-pyramid" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="pg1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="rgba(168,101,42,0.55)"/>
+            <stop offset="40%" stop-color="rgba(212,168,71,0.65)"/>
+            <stop offset="100%" stop-color="rgba(124,75,30,0.4)"/>
+          </linearGradient>
+        </defs>
+        <!-- stepped pyramid courses bottom to top -->
+        <polygon points="2,122 198,122 182,108 18,108" fill="url(#pg1)"/>
+        <polygon points="18,108 182,108 166,93 34,93" fill="url(#pg1)" opacity="0.9"/>
+        <polygon points="34,93 166,93 150,79 50,79" fill="url(#pg1)" opacity="0.92"/>
+        <polygon points="50,79 150,79 136,65 64,65" fill="url(#pg1)" opacity="0.94"/>
+        <polygon points="64,65 136,65 122,52 78,52" fill="url(#pg1)" opacity="0.96"/>
+        <polygon points="78,52 122,52 110,40 90,40" fill="url(#pg1)" opacity="0.98"/>
+        <polygon points="90,40 110,40 100,28" fill="rgba(212,168,71,0.9)"/>
+        <!-- capstone glow -->
+        <circle cx="100" cy="24" r="5" fill="rgba(212,168,71,0.75)"/>
+        <!-- course shadow lines on left face -->
+        <line x1="2" y1="122" x2="100" y2="28" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <!-- ramp dashed line on left -->
+        <line x1="2" y1="122" x2="34" y2="93" stroke="rgba(193,127,62,0.6)" stroke-width="2.5" stroke-dasharray="5 3"/>
+        <!-- ground -->
+        <line x1="0" y1="122" x2="200" y2="122" stroke="rgba(193,127,62,0.35)" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <span class="eyebrow">A Field Notebook</span>
+    <h1>Raising the Stone</h1>
+    <p class="lede">No iron. No pulleys. No electricity. We set out to find out whether the physics of rope, sand, and human muscle could really explain the Great Pyramid — and built a simulator to test it, course by course, as we went.</p>
+    <div class="scroll-cue">Follow the reasoning</div>
+  </div>
+</div>
+
+<!-- ============ SECTION 1: THE QUESTION ============ -->
+<section class="story">
+  <div class="container">
+    <div class="section-number reveal">01</div>
+    <h2 class="section-title reveal reveal-d1">The question we actually started with</h2>
+    <p class="lede">2.3 million blocks. 146.6 metres tall. Built by a civilization with no iron tools, no pulleys, and obviously no engines — just copper chisels, wooden sledges, rope, and an enormous number of people.</p>
+    <p>That's the part that's easy to find in any textbook. What's harder to find is whether the numbers actually <em>work</em> — whether you can take the real mass of a real block, the real friction of sand on stone, and the real pulling strength of one person, and watch a believable team move it up a believable ramp. So instead of reading another summary, we decided to do the arithmetic ourselves and see where it led.</p>
+    <p>We started as small as the problem allows: one block, one ramp, one team of haulers.</p>
+  </div>
+</section>
+
+<!-- ============ SECTION 2: ONE BLOCK ============ -->
+<section class="story">
+  <div class="container">
+    <div class="think-marker">First model — single block, single ramp</div>
+    <div class="section-number">02</div>
+    <h2 class="section-title">Starting with one block</h2>
+    <p>A core limestone block in the Great Pyramid weighs about 2.5 tonnes. To move it up a ramp, three forces matter: how much the block weighs, how much of that weight gravity uses to pull it back down the slope, and how much friction resists the sledge sliding across the surface beneath it. Add those together and you know exactly how much pulling force a team needs to supply.</p>
+
+    <div class="mini-ledger reveal">
+      <div class="ml-title">The Scribe's Reckoning — One Core Block</div>
+      <div class="mini-line">
+        <div class="ml-label">Block weight (W)<span class="ml-formula">mass × g = 2.5t × 9.81 m/s²</span></div>
+        <div class="ml-result">24.5 kN</div>
+      </div>
+      <div class="mini-line">
+        <div class="ml-label">Gravity pulling down an 8° ramp<span class="ml-formula">W × sin(8°)</span></div>
+        <div class="ml-result">3.4 kN</div>
+      </div>
+      <div class="mini-line">
+        <div class="ml-label">Friction — sledge on wetted sand<span class="ml-formula">μ(0.30) × W × cos(8°)</span></div>
+        <div class="ml-result">7.3 kN</div>
+      </div>
+      <div class="mini-line">
+        <div class="ml-label">Total force required<span class="ml-formula">gravity component + friction</span></div>
+        <div class="ml-result">10.7 kN</div>
+      </div>
+      <div class="mini-line">
+        <div class="ml-label">Haulers needed<span class="ml-formula">at ~245N sustained pull per person</span></div>
+        <div class="ml-result">44 people</div>
+      </div>
+    </div>
+
+    <p>That 0.30 friction coefficient isn't a guess — it's wetted sand specifically. A 2014 University of Amsterdam study (inspired by a tomb painting showing a worker pouring water just ahead of a sledge) found that wetting the sand in front of a sledge roughly halves the dragging force needed, by causing the sand grains to clump rather than pile up. Old Kingdom Egyptians appear to have known this empirically, four thousand years before anyone measured why it worked.</p>
+
+    <p>So: <strong>44 people, one rope, a core block — entirely plausible.</strong> That answered the easy version of the question. Then we asked what happens at the other end of the size range, because the Great Pyramid isn't only built from 2.5-tonne blocks. The granite beams roofing the King's Chamber run up to 80 tonnes.</p>
+
+    <div class="contrast-pair reveal">
+      <div class="contrast-box feasible">
+        <div class="cb-label">Core block, 2.5t</div>
+        <div class="cb-value">44 haulers</div>
+        <div class="cb-detail">2 ropes, comfortably within a normal work gang. The numbers move it with room to spare.</div>
+      </div>
+      <div class="contrast-box hard">
+        <div class="cb-label">Granite beam, 80t</div>
+        <div class="cb-value">1,398 haulers</div>
+        <div class="cb-detail">35 separate ropes would be needed on one ramp — past the point a single hauling system can plausibly work.</div>
+      </div>
+    </div>
+
+    <p>That contrast is the real finding from the single-block model: it's not that the pyramid is "impossible," it's that <strong>one method doesn't cover every block</strong>. The core mass of the pyramid is entirely explained by rope-and-ramp hauling. The largest granite pieces almost certainly needed something else layered in — most likely levers and wooden rocking cradles to walk them into final position, rather than a simple drag up an open ramp.</p>
+  </div>
+</section>
+
+<!-- ============ SECTION 3: SCALING UP ============ -->
+<section class="story">
+  <div class="container">
+    <div class="think-marker">Second model — the whole build, course by course</div>
+    <div class="section-number">03</div>
+    <h2 class="section-title">What actually changes as it climbs</h2>
+    <p>A single block on a single ramp tells you whether the physics works once. It doesn't tell you what happens on course 100 of 201, when the pyramid is already 90 metres tall and still climbing. So we built the full geometry: 201 courses, each one a shrinking square slab, each with its own block mass, its own ramp length, its own team size — and let the simulation walk all the way up.</p>
+
+    <p>Three things change as the structure rises, and they don't change at the same rate:</p>
+
+    <ul class="story-list">
+      <li><strong>Block mass shrinks gently.</strong> Upper-course stones are smaller and lighter than the base — roughly 2.5 tonnes down to 1.2 tonnes by the top.</li>
+      <li><strong>The team needed barely moves.</strong> Because mass tapers so gradually, the hauler count only drops from 44 to about 21 over the entire height.</li>
+      <li><strong>The ramp explodes in length.</strong> To keep a constant, haulable angle, ramp length is simply <em>height ÷ sin(angle)</em> — and height keeps climbing while the angle can't. At the base the ramp is 8 metres. By the final course it's over a kilometre.</li>
+    </ul>
+
+    <div class="field-note reveal">
+      <div class="fn-label">What this means</div>
+      <p>Labor was never the limiting factor in this model. The ramp's footprint was. By roughly a third of the way up, the ramp needed to reach the summit is already longer than the pyramid's own 230-metre base — which is exactly why Egyptologists don't think a single straight ramp reached the top. Some combination of steepening, spiraling around the faces, or shrinking ramp cross-section almost certainly took over partway through the build.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 4: THE SIMULATOR ITSELF ============ -->
+<section class="sim-section">
+  <div class="container-wide">
+    <div class="section-number">04</div>
+    <h2 class="section-title" style="text-align:center; margin-bottom: 0.8rem;">Watch it built, course by course</h2>
+    <p class="lede" style="text-align:center; max-width: 640px; margin: 0 auto 2.5rem;">This is the actual simulator — not a recording. Press Build, scrub through all 201 courses, or switch to Single Block mode to test any mass, angle, or surface yourself.</p>
+
+    <div class="sim-frame-wrap">
+      <div class="sim-frame-header">
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="sim-title">raising-the-stone — live simulation</div>
+      </div>
+      <iframe id="simFrame" src="simulator.html" height="2350" title="Pyramid construction physics simulator"></iframe>
+    </div>
+    <p class="sim-caption">Every number above and below this point comes directly from this model — nothing here is a separate illustration.</p>
+  </div>
+</section>
+
+<!-- ============ SECTION 5: WHERE DID THE RAMP GO ============ -->
+<section class="story">
+  <div class="container">
+    <div class="think-marker">A gap in the evidence, honestly stated</div>
+    <div class="section-number">05</div>
+    <h2 class="section-title">So what happened to the ramp?</h2>
+    <p>This is one of the genuinely open questions, not a solved one. We know the ramps weren't left standing — they were taken apart in stages as the building neared completion. Fragments of construction ramps survive at other pyramid sites (most notably the unfinished pyramid of Sekhemkhet), built from mudbrick, packed rubble, and limestone debris, and clearly meant to be temporary.</p>
+    <p>The outer casing stones — the smooth white limestone that once gave the pyramid its finished, polished face — appear to have been trimmed from the top down, as each level of ramp was cleared away to expose the surface beneath it. That sequencing makes sense: you can't dress and polish a face that's still buried under your own scaffolding.</p>
+    <div class="field-note correction">
+      <div class="fn-label">The honest gap</div>
+      <p>No complete ramp from the Great Pyramid itself survives in place. What we have is ramp evidence from other, smaller or unfinished sites, plus tool marks, worker graffiti, and quarry trails — enough to constrain what's plausible, not enough to settle the straight-vs-spiral debate definitively. Our simulator picks one constant-angle model because it makes the math legible, not because it's the confirmed design.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 6: ALIENS ============ -->
+<section class="story">
+  <div class="container">
+    <div class="section-number">06</div>
+    <h2 class="section-title">Does this settle "humans, not aliens"?</h2>
+    <p>It's worth being precise about what this kind of model actually proves, because it's easy to overstate.</p>
+    <p><strong>What it does show:</strong> that rope, friction, and human muscle are physically sufficient to move every stone in the structure — including the 80-tonne granite beams, given enough haulers and ropes, or more likely levers for the largest pieces. That's a real, calculable result, and it's the same kind of calculation engineers and Egyptologists have run for decades, just made interactive here.</p>
+    <p><strong>What it doesn't do:</strong> close the case on ramp design, which is still genuinely debated, or treat "ancient aliens" as a competing scientific hypothesis. It isn't one — there's no alien artifact, no inconsistency in the tool marks, no anomaly in the worker graffiti or the skeletal remains of the laborers (all of which exist, and all of which point to a large, organized human workforce). The physics was never really in question among researchers; this project just walks through why, with the actual numbers laid bare instead of asserted.</p>
+  </div>
+</section>
+
+<!-- ============ SECTION 7: HOW LONG DOES ONE BLOCK TAKE ============ -->
+<section class="story">
+  <div class="container">
+    <div class="think-marker">Third model — bottom-up timing, not top-down</div>
+    <div class="section-number">07</div>
+    <h2 class="section-title">How long does placing one block actually take?</h2>
+    <p>Herodotus's account implies roughly twenty years of construction. Divide that by 2.3 million blocks and you get a tidy "one block every few minutes" — but that number is built top-down, working backward from a deadline. We wanted the bottom-up version: actually time one block's full cycle, using the same force model already built, and see if the two views agree.</p>
+    <p>One block's full cycle has three stages: haul it up the ramp, lever it into its final seated position against its neighbor, and walk the team back down for the next one.</p>
+
+    <div class="stat-strip reveal">
+      <div class="ss-item"><span class="ss-num" data-count="5.4" data-suffix=" min">5.4 min</span><div class="ss-label">one block, course 1<br>(8m ramp)</div></div>
+      <div class="ss-item"><span class="ss-num" data-count="25.0" data-suffix=" min">25.0 min</span><div class="ss-label">one block, course 50<br>(360m ramp)</div></div>
+      <div class="ss-item"><span class="ss-num" data-count="41.2" data-suffix=" min">41.2 min</span><div class="ss-label">one block, course 100<br>(652m ramp)</div></div>
+      <div class="ss-item"><span class="ss-num" data-count="63.4" data-suffix=" min">63.4 min</span><div class="ss-label">one block, course 199<br>(1,051m ramp)</div></div>
+    </div>
+
+    <p>The pattern is almost entirely explained by the walk, not the work. Levering a block into place takes a fixed five minutes regardless of height. But the haul up and the walk back both scale directly with ramp length — and since ramp length is the one quantity that grows without bound as the pyramid rises, cycle time grows with it. By the final courses, one team spends over an hour on a single block, more than ten times longer than at the base.</p>
+  </div>
+</section>
+
+<!-- ============ SECTION 8: PARALLEL TEAMS ============ -->
+<section class="story">
+  <div class="container">
+    <div class="section-number">08</div>
+    <h2 class="section-title">Closing the loop: why thousands of workers</h2>
+    <p>If a single team's cycle time stretches to over an hour per block near the top, the only way the whole project finishes in twenty years is if many teams work in parallel — on different ramps, different faces, or staggered along one wide one. We summed the total hauling work required across all 201 courses and divided by the total working time available in twenty years at ten daylight hours a day.</p>
+
+    <div class="mini-ledger reveal">
+      <div class="ml-title">The Scribe's Reckoning — Whole-Project Pace</div>
+      <div class="mini-line">
+        <div class="ml-label">Total hauling work required<span class="ml-formula">sum of every block's cycle time, across all 201 courses</span></div>
+        <div class="ml-result">≈ 3.8 billion person-seconds</div>
+      </div>
+      <div class="mini-line">
+        <div class="ml-label">Working time available<span class="ml-formula">20 years × 10 daylight hours × 3,600s</span></div>
+        <div class="ml-result">≈ 263 million seconds</div>
+      </div>
+      <div class="mini-line">
+        <div class="ml-label">Parallel teams needed<span class="ml-formula">work required ÷ time available</span></div>
+        <div class="ml-result">~15 teams</div>
+      </div>
+    </div>
+
+    <p>Fifteen simultaneous hauling teams, each running 30–50 people, puts somewhere around 400–700 people actively hauling at any given moment — and that's <em>only</em> the haulers. It doesn't count the quarry workers cutting each block free, the masons dressing and fitting stone, the people feeding, housing, and organizing everyone else, or the engineers laying out each course's geometry. Workforce estimates from tomb and settlement evidence at Giza run to several thousand people total, in rotating gangs — which is exactly the kind of number this bottom-up math predicts you'd need, not a coincidence layered on top of it.</p>
+
+    <p>That's the real shape of the answer: not one impossibly fast team moving one block every few minutes for twenty years straight, but many ordinary teams, each working at a pace the physics fully supports, organized at a scale large enough to make the deadline. The pyramid isn't evidence of lost technology. It's evidence of logistics.</p>
+  </div>
+</section>
+
+<footer class="story-footer">
+  <div class="container">
+    <p>Every figure on this page came directly out of the simulator above — none of it was written in separately. Scroll back up and scrub through the courses, try a steeper ramp, switch to dry sand, or test the 80-tonne beam in Single Block mode; the simulator will recompute live, even though the numbers printed in the story itself stay fixed to the conditions described.</p>
+    <div class="credits">
+      FORCES MODELED: weight · incline component · sliding friction · rope-width hauler limits · haul/seat/return cycle time<br>
+      Figures drawn from published Egyptology and the 2014 Univ. of Amsterdam wetted-sand friction study. A teaching tool, not a peer-reviewed reconstruction.
+    </div>
+  </div>
+</footer>
+
+<script>
+// Reading progress bar
+const progressBar = document.getElementById('readingProgress');
+window.addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+}, { passive: true });
+
+// Scroll reveal
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.07, rootMargin: '0px 0px -48px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// Animated counters for stat strip
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const end = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const decimals = el.dataset.count.includes('.') ? el.dataset.count.split('.')[1].length : 0;
+    const duration = 900;
+    const t0 = performance.now();
+    function step(now) {
+      const prog = Math.min((now - t0) / duration, 1);
+      const eased = 1 - Math.pow(1 - prog, 3);
+      el.textContent = (eased * end).toFixed(decimals) + suffix;
+      if (prog < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+    counterObserver.unobserve(el);
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.ss-num[data-count]').forEach(el => counterObserver.observe(el));
+
+// The embedded simulator reports its own height via postMessage (works reliably
+// even under file:// or cross-origin restrictions where contentDocument access is blocked).
+window.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'pyramid-sim-height') {
+    const frame = document.getElementById('simFrame');
+    const h = event.data.height;
+    if (h > 100 && Math.abs(h - frame.offsetHeight) > 4) {
+      frame.style.height = h + 'px';
+    }
+  }
+});
+</script>
+
+</body>
+</html>
